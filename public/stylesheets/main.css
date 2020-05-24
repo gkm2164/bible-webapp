@@ -1,0 +1,38 @@
+nav {
+    width: 200px;
+    top: 0;
+    left: 0;
+    position: fixed;
+    overflow-y: scroll;
+    height: 100%;
+}
+
+section {
+    margin-left: 200px;
+    float: left;
+    overflow-y: scroll;
+    height: 100%;
+}
+
+.chap-block {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.chap-header {
+    margin-right: .20em;
+    float: left;
+}
+
+.verse-header {
+    font-size: .1em;
+}
+
+span.verse-sentence {
+    font-family: "Times New Roman", serif;
+    font-size: 1.2em;
+}
+
+.link-bold {
+    font-weight: bold;
+}

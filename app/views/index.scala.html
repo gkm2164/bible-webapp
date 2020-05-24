@@ -1,0 +1,55 @@
+@*
+* This template takes a single argument, a String containing a
+* message to display.
+*@
+@import scala.collection.immutable.TreeMap
+@(books: Map[Int, Book], verses: Map[Int, Map[Int, Map[Int, (Verse, Verse)]]])
+@*
+* Call the `main` template with two arguments. The first
+* argument is a `String` with the title of the page, the second
+* argument is an `Html` object containing the body of the page.
+*@
+@main("Welcome to Play") {
+    @*
+    * Get an `Html` object by calling the built-in Play welcome
+    * template and passing a `String` message.
+    *@
+    <article>
+        <nav>
+            <ul class="nav-list">
+            @for((id, book) <- books) {
+                <li id="menu-@id" data-verses="@book.verses"><a href="#book-@id">@book.name</a>
+                    <ul>
+                        @for(verse <- 1 to book.verses) {
+                            <li><a href="#chap-@id-@verse">@verse</a></li>
+                        }
+                    </ul>
+                </li>
+            }
+            </ul>
+        </nav>
+        <section class="contents">
+            <h1>Let's read bible!</h1>
+            @for((bookId, book) <- verses) {
+                <div class="book-block">
+                    <h2 id="book-block-@bookId"><a id="book-@bookId">@books(bookId).name</a></h2>
+                    @for((chap, verses) <- book) {
+                        <div class="chap-block">
+                            <h3 class="chap-header"><a id="chap-@bookId-@chap">@chap</a></h3>
+                            @for((verse, (textNrsv, textNiv)) <- verses) {
+                                <div class="verse-block">
+                                    <span class="verse-header">@verse</span>
+                                    <span class="verse-sentence">NRSV: @textNrsv.sentence</span>
+                                </div>
+                                <div class="verse-block">
+                                    <span class="verse-header">@verse</span>
+                                    <span class="verse-sentence">NIV: @textNiv.sentence</span>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+    </article>
+}
