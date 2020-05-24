@@ -7,6 +7,11 @@ nav {
     height: 100%;
 }
 
+nav ul {
+    list-style-type: none;
+    padding: 5px;
+}
+
 section {
     margin-left: 200px;
     float: left;
@@ -35,4 +40,12 @@ span.verse-sentence {
 
 .link-bold {
     font-weight: bold;
+}
+
+.block-clicked {
+    background-color: #ccd1d5;
+}
+
+.verse-block:hover {
+    background-color: #b6b9c1;
 }

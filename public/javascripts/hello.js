@@ -1,17 +1,9 @@
 // When the user scrolls the page, execute myFunction
-function scrollTo(id) {
-
-}
-
 $(function () {
-    function $$(tag) {
-        return $(`<${tag}></{tag}>`);
-    }
-
     $.get("/bibles", (data) => {
         const books = data.NRSV.books;
         $("nav").append(
-            $$("ul").append(books.map((b, idx) => {
+            $("<ul>").append(books.map((b, idx) => {
                 const id = idx + 1;
                 return $(`<li id="menu-${id}" data-verses="${b.chapters.length}"></li>`)
                     .append($(`<a href="#">${b.name}</a>`).click(() => {
@@ -21,24 +13,34 @@ $(function () {
                     }));
             })));
 
+        const doubleDash = /--/g
+
         // <h3 class="chap-header"><a id="chap-@bookId-@chap">@chap</a></h3>
         $("section").append(books.map((book, bookId) => {
             const name = book.name;
             const chapters = book.chapters;
-            return $$("div")
-                .append($$("h2")
-                    .append($(`<a id="book-${bookId + 1}">${name}</a></h2>`)))
-                .append(...chapters.flatMap(chapter =>
-                    [$(`<h3 id="chap-header-${bookId + 1}-${chapter.id}"></h3>`)
-                        .addClass("chap-header")
-                        .append($(`<a id="chap-${bookId}-${chapter.id}">${chapter.id}</a></h3>`)),
-                        chapter.verses.map(verse =>
-                            $(`<div class="verse-block"></div>`).append(
+            return $(`<div class="book-block-${bookId}"></div>`)
+                .append($("<h2></h2>")
+                    .append($(`<a id="book-${bookId + 1}">${name}</a>`).click(function () {
+                        $(`.book-block-${bookId}`).find($(".verse-block")).toggleClass("block-clicked");
+                    })))
+                .append(...chapters.map(chapter =>
+                    $(`<div class="chapter-block-${bookId}-${chapter.id}"></div>`).append(
+                        $(`<h3 id="chap-header-${bookId + 1}-${chapter.id}"></h3>`)
+                            .addClass("chap-header")
+                            .append($(`<a id="chap-${bookId}-${chapter.id}">${chapter.id}</a>`).click(function () {
+                                $(`.chapter-block-${bookId}-${chapter.id}`).find($(".verse-block")).toggleClass("block-clicked");
+                            })),
+                        ...chapter.verses.map(verse =>
+                            $(`<div class="verse-block" data-book="${name}" data-chapter="${chapter.id}"></div>`).append(
                                 `<span class="verse-header">${verse.verse}&nbsp;</span>`,
-                                `<span class="verse-sentence">${verse.text}</span>`))
-                    ])
-                );
+                                `<span class="verse-sentence">${verse.text.replace(doubleDash, "—")}</span>`))
+                    )));
         }));
+
+        $(".verse-block").click(function () {
+            $(this).toggleClass("block-clicked");
+        });
 
         $(document).ready(() => {
             let sticky;
@@ -97,11 +99,34 @@ $(function () {
                 $(`li#menu-${idx} > a`).removeClass("link-bold");
             }
 
-            window.onscroll = function () {
-                scrollBibleBook();
-            };
-
+            window.onscroll = scrollBibleBook;
             window.onresize = reIndexContentsOffsets;
         });
     })
 });
+
+document.onkeydown = function(evt) {
+    evt = evt || window.event;
+    var isEscape = false;
+    if ("key" in evt) {
+        isEscape = (evt.key === "Escape" || evt.key === "Esc");
+    } else {
+        isEscape = (evt.keyCode === 27);
+    }
+    if (isEscape) {
+        $(".verse-block").removeClass("block-clicked");
+    }
+};
+
+$(document).bind("copy", () => {
+    const data = [];
+    $(".block-clicked").map((_, elem) => {
+        const $elem = $(elem);
+        const bookName = $elem.attr("data-book");
+        const chapter = $elem.attr("data-chapter");
+
+        data.push(`${bookName} ${chapter}:${$elem.text()}`);
+    });
+    console.log(data.join("\n"));
+    navigator.clipboard.writeText(data.join("\n")).then(() => console.log("copied"));
+})

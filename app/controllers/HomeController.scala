@@ -1,5 +1,7 @@
 package controllers
 
+import java.io.PrintWriter
+
 import javax.inject._
 import play.api.libs.json._
 import play.api.mvc._
@@ -27,6 +29,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     import entities.EntityJson._
 
     val bibles: Map[String, entities.Bible] = repository.read
-    Ok(Json.toJson(bibles))
+    val jsonBibles = Json.toJson(bibles)
+    Ok(jsonBibles)
   }
 }
