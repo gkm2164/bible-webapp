@@ -34,14 +34,16 @@ function initializer() {
             return $(`<div class="book-block-${bookId}"></div>`)
                 .append($("<h2></h2>")
                     .append($(`<a id="book-${bookId + 1}">${name}</a>`).click(function () {
-                        $(`.book-block-${bookId}`).find($(".verse-block")).toggleClass("block-clicked");
+                        $(`.book-block-${bookId}`).find($(".verse-block"))
+                            .toggleClass("block-clicked").trigger("classChange");
                     })))
                 .append(...chapters.map(chapter =>
                     $(`<div class="chapter-block" id="chapter-block-${bookId}-${chapter.id}"></div>`).append(
                         $(`<h3 id="chap-header-${bookId + 1}-${chapter.id}"></h3>`)
                             .addClass("chap-header")
                             .append($(`<a id="chap-${bookId}-${chapter.id}">${chapter.id}</a>`).click(function () {
-                                $(`.chapter-block-${bookId}-${chapter.id}`).find($(".verse-block")).toggleClass("block-clicked");
+                                $(`#chapter-block-${bookId}-${chapter.id}`).find($(".verse-block"))
+                                    .toggleClass("block-clicked").trigger("classChange");
                             })),
                         ...chapter.verses.map(verse => {
                             const ret = $(`<div class="verse-block" data-verse-id="${verse.id}" data-book="${name}" data-chapter="${chapter.id}"></div>`)
@@ -57,14 +59,17 @@ function initializer() {
         }));
 
         $(".verse-block").click(function () {
-            $(this).toggleClass("block-clicked");
+            $(this).toggleClass("block-clicked").trigger("classChange")
+        });
+
+        $(".verse-block").on('classChange', function () {
             const id = $(this).attr("data-verse-id")
             if ($(this).hasClass("block-clicked")) {
                 addVerseToLocalStorage(id);
             } else {
                 removeVerseFromLocalStorage(id);
             }
-        });
+        })
 
         function hasClicked(verseId) {
             const set = localStorage.getItem(StorageKey);
@@ -213,7 +218,7 @@ function initializer() {
     });
 }
 
-$(initializer);
+// $(initializer);
 
 document.onkeydown = function (evt) {
     evt = evt || window.event;
@@ -224,7 +229,7 @@ document.onkeydown = function (evt) {
         isEscape = (evt.keyCode === 27);
     }
     if (isEscape) {
-        $(".verse-block").removeClass("block-clicked");
+        $(".verse-block").removeClass("block-clicked").trigger("classChange");
     }
 };
 

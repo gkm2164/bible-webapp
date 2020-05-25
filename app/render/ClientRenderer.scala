@@ -2,10 +2,11 @@ package render
 
 import java.io.File
 
-import scala.collection.JavaConverters._
+import entities.{Bible, Book, Chapter}
 
+import scala.collection.JavaConverters._
 import io.github.bonigarcia.wdm.WebDriverManager
-import org.openqa.selenium.{By, JavascriptExecutor, OutputType}
+import org.openqa.selenium.{By, JavascriptExecutor}
 import org.openqa.selenium.chrome.{ChromeDriver, ChromeOptions}
 import org.openqa.selenium.support.ui.WebDriverWait
 
@@ -18,7 +19,7 @@ class ClientRenderer {
     ret
   })
 
-  def load = {
+  def load(bibles: Bible): Map[String, String] = {
     driver.get("http://localhost:9000/raw")
     val driverWait: WebDriverWait = new WebDriverWait(driver, 10)
 
@@ -28,10 +29,16 @@ class ClientRenderer {
     )
 
     println("finishLoading: " + driver.executeScript("return document.readyState;"))
-//    val file = driver.getScreenshotAs(OutputType.FILE)
-//    import org.apache.commons.io.FileUtils
-//    FileUtils.copyFile(file, new File(s"screenshot-${System.currentTimeMillis()}.png"))
 
-    println(driver.findElements(By.cssSelector("div.book")).asScala.map(_.getCssValue("height")))
+    val ret = for {
+      Book(bookId, _, chapters) <- bibles.books
+      Chapter(chapterId, _) <- (Chapter(0, Nil) +: chapters)
+    } yield {
+      val height = driver.findElement(By.cssSelector(s"#chapter-$bookId-$chapterId")).getCssValue("height")
+      println(height)
+      s"$bookId-$chapterId" -> height
+    }
+
+    ret.toMap
   }
 }
