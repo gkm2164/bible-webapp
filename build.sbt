@@ -12,6 +12,9 @@ scalaVersion := "2.12.2"
 
 libraryDependencies ++= Seq( jdbc , ehcache , ws , specs2 % Test , guice )
 
+libraryDependencies += "org.seleniumhq.selenium" % "selenium-java" % "3.141.59"
+libraryDependencies += "io.github.bonigarcia" % "webdrivermanager" % "4.0.0"
+
 unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )  
 
       

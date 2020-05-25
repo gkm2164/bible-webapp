@@ -5,7 +5,7 @@ package object entities {
 
   case class Bible(language: String, version: String, books: Seq[Book])
 
-  case class Book(name: String, chapters: Seq[Chapter])
+  case class Book(id: Int, name: String, chapters: Seq[Chapter])
 
   case class Chapter(id: Int, verses: Seq[Verse])
 
@@ -24,6 +24,7 @@ package object entities {
       ) (unlift(Chapter.unapply))
 
     implicit val bookWrites: Writes[Book] = (
+      (JsPath \ "id").write[Int] and
         (JsPath \ "name").write[String] and
         (JsPath \ "chapters").write[Seq[Chapter]]
       ) (unlift(Book.unapply))
@@ -34,4 +35,5 @@ package object entities {
         (JsPath \ "books").write[Seq[Book]]
       ) (unlift(Bible.unapply))
   }
+
 }

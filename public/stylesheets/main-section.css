@@ -1,0 +1,40 @@
+.chap-block {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.chap-header {
+    margin-right: .20em;
+    float: left;
+}
+
+.verse-header {
+    font-size: .1em;
+}
+
+span.verse-sentence {
+    font-family: "Times New Roman", serif;
+    font-size: 1.2em;
+}
+
+.link-bold {
+    font-weight: bold;
+}
+
+.block-clicked {
+    background-color: #ccd1d5;
+}
+
+.verse-block:hover {
+    background-color: #b6b9c1;
+}
+
+.section-hidden {
+    display: none;
+}
+
+.search-emphasize {
+    background-color: yellow;
+    color: red;
+    font-weight: bold;
+}

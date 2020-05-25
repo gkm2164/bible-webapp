@@ -5,7 +5,7 @@ import scala.io.Source
 package object repository {
   val FILELIST: Seq[String] = "Bible_English_NRSV.spb" :: "Bible_English_TNIV.spb" :: Nil
 
-  case class IntermBook(toInt: Int, name: String, toInt1: Int)
+  case class IntermBook(id: Int, name: String, chapters: Int)
 
   case class IntermVerse(id: String, bookId: Int, chapter: Int, verse: Int, text: String)
 
@@ -30,7 +30,7 @@ package object repository {
 
     Bible(language, version,
       intermVerses.groupBy(_.bookId).toList.sortBy(_._1).map { case (id, chapters) =>
-        Book(intermBooks(id).name, toChapter(chapters))
+        Book(intermBooks(id).id, intermBooks(id).name, toChapter(chapters))
       })
   }
 

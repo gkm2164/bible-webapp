@@ -4,14 +4,15 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                           controllers.HomeController.index
+GET        /                    controllers.HomeController.index
 
-GET     /bibles                     controllers.HomeController.getBible
+GET        /raw                 controllers.HomeController.nonAjax
 
-# An example controller showing how to write asynchronous code
-GET     /message                    controllers.AsyncController.message
+GET        /load                controllers.HomeController.load
+
+GET        /bibles              controllers.HomeController.getBible
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET        /assets/*file        controllers.Assets.versioned(path="/public", file: Asset)
 
       

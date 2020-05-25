@@ -1,0 +1,44 @@
+@import entities.Bible
+@(bibles: Map[String, Bible])
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/bootstrap.css")" />
+        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main-section.css")" />
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")" />
+        <script src="@routes.Assets.versioned("javascripts/jquery-3.5.1.slim.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/jquery-debounce.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/popper.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/bootstrap.min.js")"></script>
+    </head>
+    <style>
+            section.contents {
+                width: 1024px;
+            }
+    </style>
+    <body>
+        <section class="contents">
+            <h1>Let's read bible!</h1>
+            <div id="contents">
+            @for(book <- bibles("NRSV").books) {
+                <div class="book" data-book-id="@book.id">
+                    <h2>@book.name</h2>
+                    @for(chapter <- book.chapters) {
+                        <div class="chap-block" data-chapter-id="@chapter.id">
+                            <h3 class="chap-header">@chapter.id</h3>
+                            <div class="verses-block">
+                            @for(verse <- chapter.verses) {
+                                <div class="verse-block" data-verse-id="@verse.id">
+                                    <span class="verse-header">@verse.verse</span>
+                                    <span class="verse-sentence">@verse.text</span>
+                                </div>
+                            }
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            </div>
+        </section>
+    </body>
+</html>
