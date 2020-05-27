@@ -121,21 +121,63 @@ $(function () {
 
   $.get("/books", function (data) {
     const books = data;
-    console.log(books);
-    $("nav").append(
-        $("<ul></ul>").append(...books.map(book => {
-          const id = book.id;
-          const name = book.name;
-          return $(`<li id='menu-${id}'></li>`).append($(`<a href="#" data-id="${id}"></a>`).append(name).click(function () {
-            const id = book.id;
-            loadChapterFunc(id, 1)();
-            $("html, body").animate({
-              scrollTop: $(`#book-${id}`).offset().top
-            });
-          }));
-        })));
+    $("nav").append($("<ul></ul>").append(...books.map(book => {
+      const id = book.id;
+      const name = book.name;
+      return $(`<li id='menu-${id}'></li>`).append($(`<a href="#" data-id="${id}"></a>`).append(name).click(function () {
+        const id = book.id;
+        loadChapterFunc(id, 1)();
+        $("html, body").animate({
+          scrollTop: $(`#book-${id}`).offset().top
+        });
+      }));
+    })));
+    const regexp = /([\w \d]+)\s(\d+:\d+)/;
+    const reverseBook = {};
+    books.forEach(b => {
+      reverseBook[b.name] = b.id;
+    })
+
+    $("input#bible-search").keypress(function (e) {
+      const keycode = e.keyCode ? e.keyCode : e.which;
+      if (keycode === 13) {
+        const key = $(this).val();
+        const tag = key.match(regexp);
+        if (tag === null || tag.length !== 3) {
+          console.error(key + " is invalid: ", tag);
+        } else {
+          console.log(tag[1], tag[2]);
+
+          const bookId = reverseBook[tag[1]];
+          const chapv = tag[2].split(":");
+          const chapId = chapv[0];
+          const verseId = chapv[1];
+
+          function scrollTo(elem, complete) {
+            console.log(elem);
+            const option = {
+              scrollTop: $(elem).offset().top
+            };
+            if (complete !== undefined) {
+              option.complete = complete;
+            }
+            return $("html, body").animate(option);
+          }
+
+          const verseKey = `#verse-${bookId}-${chapId}-${verseId}`;
+          const bookloc = `#${bookId}-${chapId}`;
+          if (loaded[bookId + "-" + chapId]) {
+            scrollTo(verseKey);
+          } else {
+            scrollTo(bookloc, () => scrollTo(verse));
+          }
+        }
+      }
+    })
+
 
     $.get("/load", function (data) {
+      $("#spinner-ring").css("display", "none");
       const renderInfo = data;
       const keys = Object.keys(renderInfo);
 
@@ -194,14 +236,10 @@ $(function () {
           const chapId = parseInt(splitKey[1]);
 
           boldingBooks[bookId] = true;
-          console.log(loaded);
-
           if (chapId === 0) {
             continue;
           }
-
           if (loaded[key]) {
-            console.log("already loaded");
             continue;
           }
 

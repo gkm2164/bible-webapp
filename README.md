@@ -11,7 +11,7 @@ The requirement of this applications can;
 - see whole bibles at once(future)
 - locate verses, chapter, book easily(ongoing)
 - open bibles quickly(done)
-- mark & unmark verses easily, and also saved, so when user got back, the thing should be there.(ongoing)
+- mark & unmark verses easily, and also saved, so when user got back, the things should be there.(done)
 - leave note(future)
 - easily share the phrases(ongoing, currently only for clipboard copy)
 - search verse, with query text highlighted(ongoing)
