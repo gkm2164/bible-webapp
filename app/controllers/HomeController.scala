@@ -1,6 +1,6 @@
 package controllers
 
-import entities.{Bible, Book}
+import entities.{Bible, Book, Chapter}
 import javax.inject._
 import play.api.libs.json._
 import play.api.mvc._
@@ -45,17 +45,26 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
   }
 
   def getBible: Action[AnyContent] = Action { request =>
+    val count = request.getQueryString("count")
+    if (count.isDefined) {
+      Ok(Json.toJson(bibles("NRSV").books.map {
+        case Book(bookId, _, chapters) =>
+          bookId.toString -> chapters.map {
+            case Chapter(chapId, verses) => chapId.toString -> verses.map(_.verse)
+          }.toMap
+      }.toMap))
+    } else {
+      val bookIdQuery = request.getQueryString("book")
+      val chapterIdQuery = request.getQueryString("chap")
+      val filteredBible = (for {
+        bookId <- bookIdQuery
+        chapId <- chapterIdQuery
+      } yield {
+        Json.toJson(bibles("NRSV").books.find(_.id == bookId.toInt)
+          .flatMap(_.chapters.find(_.id == chapId.toInt)))
+      }).getOrElse(Json.toJson(bibles))
 
-    val bookIdQuery = request.getQueryString("book")
-    val chapterIdQuery = request.getQueryString("chap")
-    val filteredBible = (for {
-      bookId <- bookIdQuery
-      chapId <- chapterIdQuery
-    } yield {
-      Json.toJson(bibles("NRSV").books.find(_.id == bookId.toInt)
-        .flatMap(_.chapters.find(_.id == chapId.toInt)))
-    }).getOrElse(Json.toJson(bibles))
-
-    Ok(filteredBible)
+      Ok(filteredBible)
+    }
   }
 }

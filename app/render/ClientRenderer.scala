@@ -1,10 +1,7 @@
 package render
 
-import java.io.File
-
 import entities.{Bible, Book, Chapter}
 
-import scala.collection.JavaConverters._
 import io.github.bonigarcia.wdm.WebDriverManager
 import org.openqa.selenium.{By, JavascriptExecutor}
 import org.openqa.selenium.chrome.{ChromeDriver, ChromeOptions}
@@ -39,6 +36,7 @@ class ClientRenderer {
       s"$bookId-$chapterId" -> height
     }
 
+    driver.close()
     ret.toMap
   }
 }
