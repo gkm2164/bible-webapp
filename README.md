@@ -8,7 +8,7 @@ Although, there are many applications of this, (mobile app, webapp), still, it i
 ## Features
 
 The requirement of this applications can;
-- see whole bibles at once(future)
+- see all version of bibles at one page(future)
 - locate verses, chapter, book easily(ongoing)
 - open bibles quickly(done)
 - mark & unmark verses easily, and also saved, so when user got back, the things should be there.(done)
