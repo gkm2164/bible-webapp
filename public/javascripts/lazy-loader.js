@@ -175,7 +175,6 @@ $(function () {
       }
     })
 
-
     $.get("/load", function (data) {
       $("#spinner-ring").css("display", "none");
       const renderInfo = data;

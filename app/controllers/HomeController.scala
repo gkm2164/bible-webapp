@@ -1,11 +1,11 @@
 package controllers
 
-import entities.{Bible, Book, Chapter}
+import entities.EntityJson._
+import entities.{Book, Chapter}
 import javax.inject._
 import play.api.libs.json._
 import play.api.mvc._
 import render.ClientRenderer
-import entities.EntityJson._
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the

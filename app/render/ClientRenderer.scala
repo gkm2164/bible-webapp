@@ -7,16 +7,15 @@ import org.openqa.selenium.{By, JavascriptExecutor}
 import org.openqa.selenium.chrome.{ChromeDriver, ChromeOptions}
 import org.openqa.selenium.support.ui.WebDriverWait
 
-import scala.concurrent.{ExecutionContext, Future}
-
 class ClientRenderer {
-  WebDriverManager.chromedriver().setup();
+  WebDriverManager.chromedriver()
+    .setup()
 
-  val driver = new ChromeDriver({
-    val ret = new ChromeOptions
-    ret.setHeadless(true)
-    ret
-  })
+  val driver = new ChromeDriver(
+    new ChromeOptions() {{
+      setHeadless(true)
+    }}
+  )
 
   def load(bibles: Bible): Map[String, String] = {
     driver.get("http://localhost:9000/raw")
@@ -31,7 +30,7 @@ class ClientRenderer {
 
     val cnts = (for {
       Book(_, _, chapters) <- bibles.books
-      Chapter(_, _) <- (Chapter(0, Nil) +: chapters)
+      Chapter(_, _) <- Chapter(0, Nil) +: chapters
     } yield 1).sum
 
     val pb = new ProgressBar("Loading heights", cnts)
