@@ -188,9 +188,24 @@ $(function () {
         return x1[1] - y1[1];
       });
 
+      function strTakeWhile(s, cond) {
+        var x = "";
+        for (var i = 0; i < s.length; i++) {
+          if (cond(s[i])) { x += s[i]; }
+          else break;
+        }
+
+        return x;
+      }
+
+      function addPx(str, val) {
+        const v = parseInt(strTakeWhile(str, ch => ch >= '0' && ch <= '9'), 10) + val;
+        return v + "px";
+      }
+
       $("div#contents").append(...keys.map(v => {
         const vs = v.split("-");
-        const ret = $(`<div class="bible-block" id="${v}" style="height: ${data[v]};"></div>`);
+        const ret = $(`<div class="bible-block" id="${v}" style="height: ${addPx(data[v], 10)};"></div>`);
         if (vs[1] === "0") {
           const bookIdx = parseInt(vs[0]);
           ret.append($(`<h2><a id="book-${bookIdx}">${books[bookIdx - 1].name}</a></h2>`)
